@@ -27,15 +27,18 @@ jobs:
 
       # Setup SonarQube
   BUILD_AND_PUBLISH:   
-      needs: Testing
-      runs-on: ubuntu-latest
-      steps:
-      - name: Code checkout
-        uses: actions/checkout@v4
+   needs: Testing
+   runs-on: ubuntu-latest
+   env:
+     AWS_REGION: eu-north-1
+     ECR_REPOSITORY: gitops-ecr
+   steps:
+     - name: Code checkout
+       uses: actions/checkout@v4
 
-      - name: Build & Upload image to ECR
-        uses: appleboy/docker-ecr-action@master
-        with:
+     - name: Build & Upload image to ECR
+       uses: appleboy/docker-ecr-action@master
+       with:
          access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
          secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
          registry: ${{ secrets.REGISTRY }}
@@ -45,5 +48,5 @@ jobs:
          daemon_off: false
          dockerfile: ./Dockerfile
          context: ./
-    
+
 
